@@ -1,0 +1,99 @@
+describe('Operation with two or more operators', function(){
+    it('Visit Calculator and sum and sub values', function(){
+       //Arrange
+        cy.visit('index.html')
+       //Act
+       cy.get('#one')
+         .click()
+         .get('[value="+"]')
+         .click()
+         .get('#two')
+         .click()
+         .get('[value="-"]')
+         .click()
+         .get('#one')
+         .click()
+         .get('[value="="]')
+         .click()
+         .get('#result')
+       //Assert
+       cy.should('have.value','2')
+
+    })
+    it('Visit Calculator sum, sub and div values', function(){
+      //Arrange
+       cy.visit('index.html')
+      //Act
+      cy.get('#nine')
+        .click()
+        .get('[value="+"]')
+        .click()
+        .get('#nine')
+        .click()
+        .get('[value="-"]')
+        .click()
+        .get('#two')
+        .click()
+        .get('[value="x"]')
+        .click()
+        .get('#nine')
+        .click()
+        .get('[value="/"]')
+        .click()
+        .get('#three')
+        .click()
+        .get('[value="="]')
+        .click()
+        .get('#result')
+      //Assert
+      cy.should('have.value','12')
+    })
+    it('Visit Calculator div and div and mult values', function(){
+      //Arrange
+      cy.visit('index.html')
+      //Act
+      cy.get('#nine')
+        .click()
+        .get('[value="/"]')
+        .click()
+        .get('#three')
+        .click()
+        .get('[value="/"]')
+        .click()
+        .get('#two')
+        .click()
+        .get('[value="x"]')
+        .click()
+        .get('#nine')
+        .click()
+        .get('[value="="]')
+        .click()
+        .get('#result')
+      //Assert
+      cy.should('have.value','13.5')
+    })
+  it('Visit Calculator and sum and sub values', function(){
+    //Arrange
+    cy.visit('index.html')
+    //Act
+    cy.get('[value="-"]')
+      .click()
+      .get('#one')
+      .click()
+      .get('[value="-"]')
+      .click()
+      .get('#two')
+      .click()
+      .get('[value="-"]')
+      .click()
+      .get('#one')
+      .click()
+      .get('[value="="]')
+      .click()
+      .get('#result')
+    //Assert
+    cy.should('have.value','-4')
+  })
+
+
+})
