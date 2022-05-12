@@ -96,7 +96,7 @@ function changeTheme() {
 // 1+2-3*4/3
 function calculate(input) {
   try{
-    if (input.match(/[\/\*][\/\*]/)){
+  if (input.match(/[\/\*][\/\*]/)){
       throw ('Operação inválida')
     }
   }catch(error){
@@ -127,8 +127,8 @@ function calculate(input) {
     if (numbersAndOperators.includes('/')){
       let number = aroundNumbers('/');
       try{
-        if (number.after === 0){
-          throw ('Operação inválida divisão por zero')
+        if (number.after === 0 || isNaN(number.after) || isNaN(number.before)){
+          throw ('Operação inválida')
         }else{
           let divResult = number.before / number.after;
           spliceNumbersAndOperators(divResult, number.operatorPosition); 
@@ -141,6 +141,17 @@ function calculate(input) {
 
     if (numbersAndOperators.includes('*')){
       let number = aroundNumbers('*');
+      try{
+        if (isNaN(number.after) || isNaN(number.before)){
+          throw ('Operação inválida')
+        }else{
+          let multResult = number.before * number.after;
+          spliceNumbersAndOperators(multResult, number.operatorPosition); 
+          continue;     
+        }
+      }catch(error){
+        return error;
+      }
       let multResult = number.before * number.after;
       spliceNumbersAndOperators(multResult, number.operatorPosition);
       continue;
@@ -166,6 +177,5 @@ function calculate(input) {
     }
 
   }
-  return numbersAndOperators.at(0)
-    
+  return numbersAndOperators.at(0) 
 }

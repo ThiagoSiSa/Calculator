@@ -1,3 +1,4 @@
 node_modules/
 testes/
 .idea/
+cypress/integration/playground_spec.js
