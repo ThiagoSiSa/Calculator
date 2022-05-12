@@ -102,7 +102,11 @@ function calculate(input) {
   }catch(error){
     return error;
   }
-  const numbersAndOperators = input.split(/([\+\-\*\/][\d])/);
+  const numbersAndOperators = input.split(/([\+\-]\d{1,}|[\+\-\*\/])/);
+  while(numbersAndOperators.includes('')){
+    let blankIndex = numbersAndOperators.indexOf('')
+    numbersAndOperators.splice(blankIndex,1);
+  }
  
 
   function aroundNumbers(operator){
@@ -153,6 +157,11 @@ function calculate(input) {
       let number = aroundNumbers('+');
       let sumResult = number.before + number.after;
       spliceNumbersAndOperators(sumResult, number.operatorPosition);
+      continue;
+    }
+    else{
+      let result =numbersAndOperators.reduce((acc, curr) => Number(acc)+Number(curr));
+      spliceNumbersAndOperators(result, 1);
       continue;
     }
 
