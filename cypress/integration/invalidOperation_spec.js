@@ -32,7 +32,7 @@ describe('Operation with wrong operators input', function(){
         .click()
         .get('#result')
       //Assert
-      cy.should('have.value','Operação inválida')
+      cy.should('have.value','Operação inválida divisão por zero')
     })
     it('Visit Calculator div and mult operator ', function(){
       //Arrange

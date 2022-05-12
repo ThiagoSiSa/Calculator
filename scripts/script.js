@@ -96,7 +96,7 @@ function changeTheme() {
 // 1+2-3*4/3
 function calculate(input) {
   try{
-    if (!input.match(/[\d]/)){
+    if (input.match(/[\/\*][\/\*]/)){
       throw ('Operação inválida')
     }
   }catch(error){
@@ -127,16 +127,16 @@ function calculate(input) {
     if (numbersAndOperators.includes('/')){
       let number = aroundNumbers('/');
       try{
-        if(number.after !== 0 && number.before !==0){
+        if (number.after === 0){
+          throw ('Operação inválida divisão por zero')
+        }else{
           let divResult = number.before / number.after;
           spliceNumbersAndOperators(divResult, number.operatorPosition); 
-        }else{
-          throw ('Operação inválida')
+          continue;     
         }
       }catch(error){
-        return error
+        return error;
       }
-      continue;     
     }
 
     if (numbersAndOperators.includes('*')){
