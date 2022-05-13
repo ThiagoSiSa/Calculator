@@ -113,69 +113,64 @@ function calculate(input) {
     let operatorPosition = numbersAndOperators.indexOf(operator);
     let numberAfter = Number(numbersAndOperators[operatorPosition+1]);
     let numberBefore = Number(numbersAndOperators[operatorPosition-1]);
-    let number = {after : numberAfter, before: numberBefore, operatorPosition: operatorPosition};
-    return number;
-    
-  }
+
+    if (isNaN(numberAfter) || isNaN(numberBefore)){
+      throw ('Operação inválida')
+    }
+    if( operator ==='/' && numberAfter === 0 ){
+      throw ('Operação inválida')
+    }else{
+      let number = {after : numberAfter, before: numberBefore, operatorPosition: operatorPosition};
+      return number;
+    }
+  }      
 
   function spliceNumbersAndOperators(result, operatorPosition){
-    numbersAndOperators.splice(operatorPosition-1,3,result);
+    return numbersAndOperators.splice(operatorPosition-1,3,result);
   }
   
+  
   while (numbersAndOperators.length !== 1){
+
+    try{
    
-    if (numbersAndOperators.includes('/')){
-      let number = aroundNumbers('/');
-      try{
-        if (number.after === 0 || isNaN(number.after) || isNaN(number.before)){
-          throw ('Operação inválida')
-        }else{
-          let divResult = number.before / number.after;
-          spliceNumbersAndOperators(divResult, number.operatorPosition); 
-          continue;     
-        }
-      }catch(error){
-        return error;
+      if (numbersAndOperators.includes('/')){
+        let number = aroundNumbers('/');
+        let divResult = number.before / number.after;
+        spliceNumbersAndOperators(divResult, number.operatorPosition); 
+        continue;        
       }
-    }
 
-    if (numbersAndOperators.includes('*')){
-      let number = aroundNumbers('*');
-      try{
-        if (isNaN(number.after) || isNaN(number.before)){
-          throw ('Operação inválida')
-        }else{
-          let multResult = number.before * number.after;
-          spliceNumbersAndOperators(multResult, number.operatorPosition); 
-          continue;     
-        }
-      }catch(error){
-        return error;
+      if (numbersAndOperators.includes('*')){
+        let number = aroundNumbers('*');
+        let multResult = number.before * number.after;
+        spliceNumbersAndOperators(multResult, number.operatorPosition); 
+        continue;         
       }
-      let multResult = number.before * number.after;
-      spliceNumbersAndOperators(multResult, number.operatorPosition);
-      continue;
-    }
 
-    if (numbersAndOperators.includes('-')){
-      let number = aroundNumbers('-')
-      let subResult = number.before - number.after
-      spliceNumbersAndOperators(subResult, number.operatorPosition)
-      continue;
-    
-    }
-    if (numbersAndOperators.includes('+')){
-      let number = aroundNumbers('+');
-      let sumResult = number.before + number.after;
-      spliceNumbersAndOperators(sumResult, number.operatorPosition);
-      continue;
-    }
-    else{
-      let result =numbersAndOperators.reduce((acc, curr) => Number(acc)+Number(curr));
-      spliceNumbersAndOperators(result, 1);
-      continue;
+      if (numbersAndOperators.includes('-')){
+        let number = aroundNumbers('-')
+        let subResult = number.before - number.after
+        spliceNumbersAndOperators(subResult, number.operatorPosition)
+        continue;
+      
+      }
+      if (numbersAndOperators.includes('+')){
+        let number = aroundNumbers('+');
+        let sumResult = number.before + number.after;
+        spliceNumbersAndOperators(sumResult, number.operatorPosition);
+        continue;
+      }
+      else{
+        let result =numbersAndOperators.reduce((acc, curr) => Number(acc)+Number(curr));
+        spliceNumbersAndOperators(result, 1);
+        continue;
+      }
+    }catch(error){
+      return error;
     }
 
   }
   return numbersAndOperators.at(0) 
 }
+
