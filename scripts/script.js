@@ -94,83 +94,95 @@ function changeTheme() {
 }
 
 // 1+2-3*4/3
-function calculate(input) {
-  try{
-  if (input.match(/[\/\*][\/\*]/)){
-      throw ('Operação inválida')
-    }
-  }catch(error){
-    return error;
+class Tokenizer {
+  constructor(userInput) {
+    this.userInput = userInput;
   }
-  const numbersAndOperators = input.split(/([\+\-]\d{1,}|[\+\-\*\/])/);
-  while(numbersAndOperators.includes('')){
-    let blankIndex = numbersAndOperators.indexOf('')
-    numbersAndOperators.splice(blankIndex,1);
-  }
- 
-
-  function aroundNumbers(operator){
-    let operatorPosition = numbersAndOperators.indexOf(operator);
-    let numberAfter = Number(numbersAndOperators[operatorPosition+1]);
-    let numberBefore = Number(numbersAndOperators[operatorPosition-1]);
-
-    if (isNaN(numberAfter) || isNaN(numberBefore)){
-      throw ('Operação inválida')
-    }
-    if( operator ==='/' && numberAfter === 0 ){
-      throw ('Operação inválida')
-    }else{
-      let number = {after : numberAfter, before: numberBefore, operatorPosition: operatorPosition};
-      return number;
-    }
-  }      
-
-  function spliceNumbersAndOperators(result, operatorPosition){
-    return numbersAndOperators.splice(operatorPosition-1,3,result);
-  }
-  
-  
-  while (numbersAndOperators.length !== 1){
-
-    try{
-   
-      if (numbersAndOperators.includes('/')){
-        let number = aroundNumbers('/');
-        let divResult = number.before / number.after;
-        spliceNumbersAndOperators(divResult, number.operatorPosition); 
-        continue;        
-      }
-
-      if (numbersAndOperators.includes('*')){
-        let number = aroundNumbers('*');
-        let multResult = number.before * number.after;
-        spliceNumbersAndOperators(multResult, number.operatorPosition); 
-        continue;         
-      }
-
-      if (numbersAndOperators.includes('-')){
-        let number = aroundNumbers('-')
-        let subResult = number.before - number.after
-        spliceNumbersAndOperators(subResult, number.operatorPosition)
-        continue;
-      
-      }
-      if (numbersAndOperators.includes('+')){
-        let number = aroundNumbers('+');
-        let sumResult = number.before + number.after;
-        spliceNumbersAndOperators(sumResult, number.operatorPosition);
-        continue;
-      }
-      else{
-        let result =numbersAndOperators.reduce((acc, curr) => Number(acc)+Number(curr));
-        spliceNumbersAndOperators(result, 1);
-        continue;
-      }
-    }catch(error){
-      return error;
+  token() {
+    if (this.userInput.match(/[\/\*][\/\*]/)) {
+      throw ('Operação inválida');
     }
 
+    let numbersAndOperators = this.userInput.split(/([\+\-]\d{1,}|[\+\-\*\/])/);
+    while (numbersAndOperators.includes('')) {
+      let blankIndex = numbersAndOperators.indexOf('');
+      numbersAndOperators.splice(blankIndex, 1);
+    }
+    return numbersAndOperators;
   }
-  return numbersAndOperators.at(0) 
 }
 
+class Calculator {
+  constructor(tokenNumbersAndOperators) {
+    this.tokenNumbersAndOperators = tokenNumbersAndOperators;
+  }
+
+  calculing() {
+
+    while (this.tokenNumbersAndOperators.length !== 1) {
+
+      if (this.tokenNumbersAndOperators.includes('/')) {
+        let number = this._aroundNumbers('/');
+        let divResult = number.before / number.after;
+        this._spliceNumbersAndOperators(divResult, number.operatorPosition);
+        continue;
+      }
+
+      if (this.tokenNumbersAndOperators.includes('*')) {
+        let number = this._aroundNumbers('*');
+        let multResult = number.before * number.after;
+        this._spliceNumbersAndOperators(multResult, number.operatorPosition);
+        continue;
+      }
+
+      if (this.tokenNumbersAndOperators.includes('-')) {
+        let number = this._aroundNumbers('-');
+        let subResult = number.before - number.after;
+        this._spliceNumbersAndOperators(subResult, number.operatorPosition);
+        continue;
+
+      }
+      if (this.tokenNumbersAndOperators.includes('+')) {
+        let number = this._aroundNumbers('+');
+        let sumResult = number.before + number.after;
+        this._spliceNumbersAndOperators(sumResult, number.operatorPosition);
+        continue;
+      }
+      else {
+        let result = this.tokenNumbersAndOperators.reduce((acc, curr) => Number(acc) + Number(curr));
+        this._spliceNumbersAndOperators(result, 1);
+        continue;
+      }
+
+    }
+    return this.tokenNumbersAndOperators.at(0)
+  }
+  _aroundNumbers(operator) {
+    let operatorPosition = this.tokenNumbersAndOperators.indexOf(operator);
+    let numberAfter = Number(this.tokenNumbersAndOperators[operatorPosition + 1]);
+    let numberBefore = Number(this.tokenNumbersAndOperators[operatorPosition - 1]);
+
+    if (isNaN(numberAfter) || isNaN(numberBefore)) {
+      throw ('Operação inválida');
+    }
+    if (operator === '/' && numberAfter === 0) {
+      throw ('Operação inválida');
+    } else {
+      let number = { after: numberAfter, before: numberBefore, operatorPosition: operatorPosition };
+      return number;
+    }
+  }
+  _spliceNumbersAndOperators(result, operatorPosition) {
+    return this.tokenNumbersAndOperators.splice(operatorPosition - 1, 3, result);
+  }
+}
+
+function calculate(input) {
+  try {
+    const tokenNumbersAndOperators = new Tokenizer(input).token();
+    const result = new Calculator(tokenNumbersAndOperators).calculing();
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
